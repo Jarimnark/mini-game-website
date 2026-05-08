@@ -1,0 +1,522 @@
+/* ───────────────────────────────────────────────────────────────
+   Garden Sequence — Game Styles
+   Relies on CSS variables from ../../src/styles/main.css
+─────────────────────────────────────────────────────────────── */
+
+/* ── Gnome colour palette (all via vars) ────────────────────── */
+:root {
+  --gnome-hat:       var(--color-primary);
+  --gnome-hat-brim:  var(--color-primary-hover);
+  --gnome-skin:      #F4C89A;   /* skin-tone — defined as a var per project rules */
+  --gnome-eye:       var(--color-text);
+  --gnome-nose:      var(--color-secondary);
+  --gnome-beard:     var(--color-surface);
+  --gnome-coat:      var(--color-secondary);
+  --gnome-shoe:      var(--color-text);
+  --gnome-belt:      var(--color-accent);
+
+  /* Local semantic colour */
+  --color-danger:    #C0392B;   /* error/wrong-click red — defined as a var per project rules */
+
+  --station-size:    clamp(100px, 22vw, 130px);
+  --play-gap:        clamp(8px, 3vw, 24px);
+
+  /* Glow colours — reference vars only in CSS rules */
+  --glow-playback:   0 0 0 4px var(--color-accent), 0 0 24px 8px rgba(242,192,120,0.55);
+  --glow-correct:    0 0 0 4px var(--color-primary), 0 0 28px 10px rgba(232,129,58,0.50);
+  --glow-wrong:      0 0 0 4px var(--color-danger), 0 0 20px 8px rgba(192,57,43,0.40);
+}
+
+/* ── Back link override ──────────────────────────────────────── */
+.back-link {
+  position: relative;
+  z-index: 10;
+  margin: 0.5rem 0.75rem;
+  display: inline-flex;
+}
+
+/* ── Page layout ─────────────────────────────────────────────── */
+body {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ── Garden background decorations ──────────────────────────── */
+.garden-deco {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.deco {
+  position: absolute;
+  font-size: 2rem;
+  opacity: 0;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  transform: scale(0.6);
+  user-select: none;
+}
+
+/* Milestone 5 — sunflowers */
+.deco--sunflower-1 { bottom: 10%; left: 3%; font-size: 2.4rem; }
+.deco--sunflower-2 { bottom: 8%;  right: 4%; font-size: 2rem; }
+
+/* Milestone 8 — clover & butterfly */
+.deco--clover     { top: 20%; left: 5%;  font-size: 1.8rem; }
+.deco--butterfly  { top: 25%; right: 6%; font-size: 2rem;   animation: flutter 3s ease-in-out infinite; }
+
+/* Milestone 12 — mushroom */
+.deco--mushroom   { bottom: 20%; left: 45%; font-size: 1.6rem; }
+
+@keyframes flutter {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50%       { transform: scale(1.1) translateY(-8px); }
+}
+
+/* States added by JS */
+.deco--visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ── Main wrapper ────────────────────────────────────────────── */
+.game-wrapper {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 1rem 1.5rem;
+  gap: 0.6rem;
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.game-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.round-banner {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  background: var(--color-accent-pale);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-full, 9999px);
+  padding: 0.3rem 1rem;
+}
+
+.round-label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.round-number {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.score-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.score-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 0.25rem 0.75rem;
+  min-width: 54px;
+}
+
+.score-pill--hi {
+  border-color: var(--color-accent);
+  background: var(--color-accent-pale);
+}
+
+.score-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.score-value {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--color-text);
+  line-height: 1.1;
+}
+
+/* ── Status bar ──────────────────────────────────────────────── */
+.status-bar {
+  width: 100%;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-muted);
+  min-height: 1.4rem;
+  letter-spacing: 0.02em;
+}
+
+/* ── Progress bar ────────────────────────────────────────────── */
+.progress-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.progress-track {
+  flex: 1;
+  height: 8px;
+  background: var(--color-border);
+  border-radius: var(--radius-full, 9999px);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--radius-full, 9999px);
+  transition: width 0.25s ease;
+  width: 0%;
+}
+
+.progress-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-muted);
+  white-space: nowrap;
+  min-width: 36px;
+  text-align: right;
+}
+
+/* ── Play area ───────────────────────────────────────────────── */
+.play-area {
+  position: relative;
+  width: 100%;
+  /* 2×2 grid at corners */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--play-gap);
+  aspect-ratio: 1 / 1;
+  max-width: 380px;
+}
+
+/* ── Gnome ───────────────────────────────────────────────────── */
+.gnome {
+  position: absolute;
+  /* Default center */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 80px;
+  z-index: 5;
+  transition: top 0.45s cubic-bezier(0.34, 1.4, 0.64, 1),
+              left 0.45s cubic-bezier(0.34, 1.4, 0.64, 1);
+  pointer-events: none;
+  filter: drop-shadow(0 3px 6px rgba(61,44,30,0.25));
+}
+
+.gnome--oops {
+  animation: gnome-oops 0.55s ease both;
+}
+
+@keyframes gnome-oops {
+  0%   { transform: translate(-50%, -50%) rotate(0deg); }
+  20%  { transform: translate(-50%, -60%) rotate(-12deg); }
+  40%  { transform: translate(-50%, -50%) rotate(10deg); }
+  60%  { transform: translate(-50%, -58%) rotate(-8deg); }
+  80%  { transform: translate(-50%, -50%) rotate(5deg); }
+  100% { transform: translate(-50%, -50%) rotate(0deg); }
+}
+
+.gnome--bounce {
+  animation: gnome-bounce 0.4s ease;
+}
+
+@keyframes gnome-bounce {
+  0%   { transform: translate(-50%, -50%) scale(1); }
+  40%  { transform: translate(-50%, -65%) scale(1.08); }
+  70%  { transform: translate(-50%, -45%) scale(0.95); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+/* ── Stations ────────────────────────────────────────────────── */
+.station {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  padding: 0.4rem;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.station:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--color-accent);
+}
+
+.station:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.station:disabled {
+  cursor: default;
+  pointer-events: none;
+}
+
+.station__icon {
+  font-size: clamp(2rem, 8vw, 2.8rem);
+  line-height: 1;
+  display: block;
+}
+
+.station__label {
+  font-family: var(--font-display);
+  font-size: clamp(0.6rem, 2.5vw, 0.8rem);
+  color: var(--color-muted);
+  letter-spacing: 0.02em;
+}
+
+/* Playback glow — amber pulse */
+.station--active-playback {
+  box-shadow: var(--glow-playback);
+  border-color: var(--color-accent);
+  background: var(--color-accent-pale);
+  animation: station-pulse 0.6s ease;
+}
+
+@keyframes station-pulse {
+  0%   { box-shadow: var(--shadow-card); }
+  40%  { box-shadow: var(--glow-playback); }
+  100% { box-shadow: var(--glow-playback); }
+}
+
+/* Correct click — golden glow */
+.station--correct {
+  box-shadow: var(--glow-correct);
+  border-color: var(--color-primary);
+  background: var(--color-accent-pale);
+  animation: station-correct 0.35s ease;
+}
+
+@keyframes station-correct {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.07); }
+  100% { transform: scale(1); }
+}
+
+/* Wrong click flash */
+.station--wrong {
+  box-shadow: var(--glow-wrong);
+  border-color: var(--color-primary);
+  animation: station-wrong 0.4s ease;
+}
+
+@keyframes station-wrong {
+  0%, 100% { transform: translate(0); }
+  20%       { transform: translateX(-6px); }
+  40%       { transform: translateX(6px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
+/* ── Retry pips ──────────────────────────────────────────────── */
+.retry-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.retry-pip {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-border);
+  display: block;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.retry-pip--active {
+  background: var(--color-primary);
+  box-shadow: 0 0 6px rgba(232,129,58,0.5);
+}
+
+.retry-pip--lost {
+  background: var(--color-border);
+  transform: scale(0.75);
+}
+
+/* ── Overlays ────────────────────────────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(61, 44, 30, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: overlay-in 0.35s ease both;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.overlay[hidden] {
+  display: none;
+}
+
+.overlay-card {
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: 0 12px 40px rgba(61,44,30,0.28);
+  padding: 2rem 1.75rem;
+  max-width: 340px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  animation: card-in 0.4s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+
+@keyframes card-in {
+  from { transform: scale(0.85) translateY(20px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.overlay-emoji {
+  font-size: 3.2rem;
+  line-height: 1;
+}
+
+.overlay-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: var(--color-text);
+  letter-spacing: 0.01em;
+  text-align: center;
+}
+
+.overlay-desc {
+  font-size: 0.92rem;
+  color: var(--color-muted);
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* Stars */
+.overlay-stars {
+  display: flex;
+  gap: 0.3rem;
+  font-size: 1.8rem;
+  letter-spacing: 0.1em;
+}
+
+/* Stats block */
+.overlay-stats {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: var(--color-bg);
+  border-radius: var(--radius-btn);
+  padding: 0.85rem 1rem;
+  border: 1.5px solid var(--color-border);
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-row--hi {
+  border-top: 1px solid var(--color-border);
+  padding-top: 0.4rem;
+  margin-top: 0.2rem;
+}
+
+.stat-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-muted);
+  letter-spacing: 0.04em;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--color-primary);
+}
+
+/* ── Button (play again) ─────────────────────────────────────── */
+.btn--primary {
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.85rem 1.5rem;
+  letter-spacing: 0.02em;
+}
+
+/* ── Responsive tweaks ──────────────────────────────────────── */
+@media (min-width: 480px) {
+  .play-area {
+    max-width: 440px;
+  }
+  .gnome {
+    width: 64px;
+    height: 84px;
+  }
+}
+
+@media (max-width: 375px) {
+  .station__label {
+    display: none;
+  }
+  .game-wrapper {
+    padding: 0.4rem 0.6rem 1rem;
+  }
+}

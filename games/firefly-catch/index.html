@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Firefly Catch — mini-gamo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="game-shell">
+
+    <!-- ═══ Header chrome ════════════════════════════════════════ -->
+    <header class="game-header">
+      <a href="../../src/index.html" class="back-link" aria-label="Back to mini-gamo">← mini-gamo</a>
+
+      <div class="hud" role="status" aria-live="polite" aria-atomic="true">
+
+        <!-- Wave -->
+        <div class="hud__item" title="Current wave">
+          <span class="hud__label">Wave</span>
+          <span class="hud__value" id="wave-val">1</span>
+        </div>
+
+        <!-- Score -->
+        <div class="hud__item" title="Score">
+          <span class="hud__label">Score</span>
+          <span class="hud__value" id="score-val">0</span>
+        </div>
+
+        <!-- Lantern pips -->
+        <div class="hud__item" title="Lantern life">
+          <span class="hud__label">Lantern</span>
+          <div class="pips" id="pips-row" role="meter" aria-label="Lantern pips" aria-valuenow="5" aria-valuemin="0" aria-valuemax="5">
+            <!-- Pips built by JS -->
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- ═══ Timer bar ════════════════════════════════════════════ -->
+    <div class="timer-bar-wrap" aria-hidden="true">
+      <div class="timer-bar" id="timer-bar"></div>
+    </div>
+
+    <!-- ═══ Play field ══════════════════════════════════════════ -->
+    <main class="meadow" id="meadow" aria-label="Game field">
+
+      <!-- Static star background -->
+      <div class="star-layer" id="star-layer" aria-hidden="true"></div>
+
+      <!-- ── Start screen ──────────────────────────────────────── -->
+      <div class="screen" id="screen-start" role="dialog" aria-modal="true" aria-labelledby="start-title">
+        <div class="screen__emoji" aria-hidden="true">✨</div>
+        <h1 class="screen__title" id="start-title">Firefly Catch</h1>
+        <p class="screen__sub">
+          Tap each glowing firefly before it fades.<br>
+          Miss too many and your lantern goes dark!
+        </p>
+        <button class="btn-play" id="btn-start">Start Game</button>
+      </div>
+
+      <!-- ── Inter-wave screen ─────────────────────────────────── -->
+      <div class="screen" id="screen-inter" role="dialog" aria-modal="true" aria-label="Wave complete">
+        <div class="screen__emoji" aria-hidden="true">🌙</div>
+        <div class="wave-badge">Wave <span id="inter-wave-num">2</span> incoming…</div>
+        <p class="screen__sub">The meadow grows busier.<br>Stay sharp!</p>
+      </div>
+
+      <!-- ── Game-over screen ──────────────────────────────────── -->
+      <div class="screen" id="screen-over" role="dialog" aria-modal="true" aria-labelledby="over-title">
+        <div class="screen__emoji" aria-hidden="true">🏮</div>
+        <h2 class="screen__title" id="over-title">Lantern Out!</h2>
+
+        <div class="stars-display" id="stars-display" aria-label="Star rating">
+          <span>★</span><span class="star--empty">★</span><span class="star--empty">★</span>
+        </div>
+
+        <div class="screen__stats">
+          <div class="screen__stat">
+            <span class="screen__stat-label">Score</span>
+            <span class="screen__stat-value" id="final-score">0</span>
+          </div>
+          <div class="screen__stat">
+            <span class="screen__stat-label">Best</span>
+            <span class="screen__stat-value" id="high-score-val">0</span>
+          </div>
+        </div>
+
+        <button class="btn-play" id="btn-play-again">Play Again</button>
+      </div>
+
+    </main>
+
+  </div><!-- /.game-shell -->
+
+  <script src="game.js"></script>
+</body>
+</html>

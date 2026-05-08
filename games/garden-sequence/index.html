@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Garden Sequence — mini-gamo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../src/styles/main.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Back link -->
+  <a class="back-link" href="../../src/index.html">← mini-gamo</a>
+
+  <!-- Garden decorations (milestone reveals) -->
+  <div class="garden-deco" id="garden-deco" aria-hidden="true">
+    <div class="deco deco--sunflower deco--sunflower-1">🌻</div>
+    <div class="deco deco--sunflower deco--sunflower-2">🌻</div>
+    <div class="deco deco--clover">🍀</div>
+    <div class="deco deco--butterfly">🦋</div>
+    <div class="deco deco--mushroom">🍄</div>
+  </div>
+
+  <!-- Main game wrapper -->
+  <main class="game-wrapper">
+
+    <!-- Header banner -->
+    <header class="game-header">
+      <div class="round-banner">
+        <span class="round-label">Round</span>
+        <span class="round-number" id="round-number">1</span>
+      </div>
+      <div class="score-row">
+        <div class="score-pill">
+          <span class="score-label">Score</span>
+          <span class="score-value" id="score-display">0</span>
+        </div>
+        <div class="score-pill score-pill--hi">
+          <span class="score-label">Best</span>
+          <span class="score-value" id="hi-score-display">0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Status message -->
+    <div class="status-bar" id="status-bar" aria-live="polite">
+      <span id="status-text">Watch carefully…</span>
+    </div>
+
+    <!-- Progress indicator (during player input) -->
+    <div class="progress-wrap" id="progress-wrap" hidden>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <span class="progress-label" id="progress-label">0 / 0</span>
+    </div>
+
+    <!-- Play area: 4 stations + gnome -->
+    <div class="play-area" id="play-area">
+
+      <!-- Gnome character (CSS + SVG inline) -->
+      <div class="gnome" id="gnome" aria-hidden="true">
+        <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" width="60" height="80">
+          <!-- Hat -->
+          <polygon points="30,2 14,30 46,30" fill="var(--gnome-hat)"/>
+          <rect x="11" y="29" width="38" height="7" rx="3" fill="var(--gnome-hat-brim)"/>
+          <!-- Face -->
+          <ellipse cx="30" cy="44" rx="13" ry="14" fill="var(--gnome-skin)"/>
+          <!-- Eyes -->
+          <circle cx="25" cy="41" r="2.2" fill="var(--gnome-eye)"/>
+          <circle cx="35" cy="41" r="2.2" fill="var(--gnome-eye)"/>
+          <!-- Nose (big gnome nose) -->
+          <ellipse cx="30" cy="47" rx="4" ry="3.5" fill="var(--gnome-nose)"/>
+          <!-- Beard -->
+          <ellipse cx="30" cy="57" rx="12" ry="9" fill="var(--gnome-beard)"/>
+          <!-- Body -->
+          <rect x="19" y="57" width="22" height="14" rx="6" fill="var(--gnome-coat)"/>
+          <!-- Feet -->
+          <ellipse cx="24" cy="73" rx="6" ry="4" fill="var(--gnome-shoe)"/>
+          <ellipse cx="36" cy="73" rx="6" ry="4" fill="var(--gnome-shoe)"/>
+          <!-- Belt buckle -->
+          <rect x="26" y="62" width="8" height="5" rx="1.5" fill="var(--gnome-belt)"/>
+        </svg>
+      </div>
+
+      <!-- Station TL: Water Can -->
+      <button class="station" id="station-0" data-index="0" aria-label="Water Can station">
+        <span class="station__icon">🚿</span>
+        <span class="station__label">Water Can</span>
+      </button>
+
+      <!-- Station TR: Trowel -->
+      <button class="station" id="station-1" data-index="1" aria-label="Trowel station">
+        <span class="station__icon">🪴</span>
+        <span class="station__label">Trowel</span>
+      </button>
+
+      <!-- Station BL: Seed Bag -->
+      <button class="station" id="station-2" data-index="2" aria-label="Seed Bag station">
+        <span class="station__icon">🌱</span>
+        <span class="station__label">Seed Bag</span>
+      </button>
+
+      <!-- Station BR: Sun Hat -->
+      <button class="station" id="station-3" data-index="3" aria-label="Sun Hat station">
+        <span class="station__icon">🎩</span>
+        <span class="station__label">Sun Hat</span>
+      </button>
+
+    </div>
+
+    <!-- Retry pips -->
+    <div class="retry-row" aria-label="Remaining attempts">
+      <span class="retry-pip retry-pip--active" id="pip-0"></span>
+      <span class="retry-pip retry-pip--active" id="pip-1"></span>
+      <span class="retry-pip retry-pip--active" id="pip-2"></span>
+    </div>
+
+  </main>
+
+  <!-- Start overlay -->
+  <div class="overlay" id="start-overlay">
+    <div class="overlay-card">
+      <div class="overlay-emoji">🪴</div>
+      <h2 class="overlay-title">Garden Sequence</h2>
+      <p class="overlay-desc">Watch the gnome visit garden stations, then tap them in the same order. Each round grows the sequence!</p>
+      <button class="btn btn--primary" id="btn-start">Start Gardening</button>
+    </div>
+  </div>
+
+  <!-- Game-over overlay -->
+  <div class="overlay" id="gameover-overlay" hidden>
+    <div class="overlay-card">
+      <div class="overlay-emoji" id="go-emoji">🌾</div>
+      <h2 class="overlay-title">Garden Done!</h2>
+      <div class="overlay-stars" id="go-stars"></div>
+      <div class="overlay-stats">
+        <div class="stat-row">
+          <span class="stat-label">Final Score</span>
+          <strong class="stat-value" id="go-score">0</strong>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Rounds Reached</span>
+          <strong class="stat-value" id="go-rounds">0</strong>
+        </div>
+        <div class="stat-row stat-row--hi">
+          <span class="stat-label">High Score</span>
+          <strong class="stat-value" id="go-hi">0</strong>
+        </div>
+      </div>
+      <button class="btn btn--primary" id="btn-play-again">Play Again 🌱</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

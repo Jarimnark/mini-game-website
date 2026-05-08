@@ -1,0 +1,109 @@
+/* mini-gamo — Global Design Tokens
+   Import this file in every game: @import url('../../src/styles/main.css');
+   Then use CSS variables throughout: var(--color-primary), etc.           */
+
+:root {
+  /* ── Colors ──────────────────────────────────────────────── */
+  --color-bg:           #FFF8F0;   /* warm cream page background     */
+  --color-surface:      #FFFDF8;   /* slightly lighter surface/card  */
+  --color-primary:      #E8813A;   /* warm amber — buttons, accents  */
+  --color-primary-hover:#D4712A;   /* darker amber on hover          */
+  --color-secondary:    #C9956B;   /* muted terracotta               */
+  --color-text:         #3D2C1E;   /* dark warm brown — body text    */
+  --color-muted:        #8C6E5A;   /* subdued text / labels          */
+  --color-accent:       #F2C078;   /* golden yellow highlight        */
+  --color-accent-pale:  #FEF0D6;   /* pale golden background tint    */
+  --color-border:       #E8D5C4;   /* soft beige borders             */
+
+  /* ── Typography ──────────────────────────────────────────── */
+  --font-display:       'Fredoka One', cursive;   /* headings / titles  */
+  --font-body:          'Nunito', sans-serif;      /* all body text      */
+
+  /* ── Shape ───────────────────────────────────────────────── */
+  --radius-card:        12px;
+  --radius-btn:         8px;
+  --radius-tag:         20px;
+  --radius-full:        9999px;
+
+  /* ── Shadow ──────────────────────────────────────────────── */
+  --shadow-card:        0 2px 12px rgba(180, 120, 60, 0.10);
+  --shadow-card-hover:  0 8px 28px rgba(180, 120, 60, 0.18);
+  --shadow-btn:         0 4px 14px rgba(232, 129, 58, 0.35);
+
+  /* ── Spacing Scale ───────────────────────────────────────── */
+  --space-xs:   0.25rem;
+  --space-sm:   0.5rem;
+  --space-md:   1rem;
+  --space-lg:   1.5rem;
+  --space-xl:   2.5rem;
+  --space-2xl:  4rem;
+
+  /* ── Layout ──────────────────────────────────────────────── */
+  --max-w:      1100px;
+}
+
+/* ── Minimal game-page baseline reset ───────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+
+/* ── Back-to-home link (used in every game page) ─────────────── */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-muted);
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-btn);
+  transition: background 0.15s, color 0.15s;
+}
+.back-link:hover {
+  background: var(--color-accent-pale);
+  color: var(--color-primary);
+}
+
+/* ── Generic button ──────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-btn);
+  padding: 0.7rem 1.5rem;
+  transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
+  letter-spacing: 0.02em;
+}
+.btn--primary {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: var(--shadow-btn);
+}
+.btn--primary:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+.btn--primary:active { transform: translateY(0); }
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+}
+.btn--ghost:hover {
+  background: var(--color-accent-pale);
+}

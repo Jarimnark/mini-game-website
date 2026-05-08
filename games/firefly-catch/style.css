@@ -1,0 +1,416 @@
+/* Firefly Catch — Game Styles
+   Imports global design tokens from main.css, then adds game-specific variables and rules.
+   All colors in CSS rules use CSS variables only — no hardcoded hex values. */
+
+@import url('../../src/styles/main.css');
+
+/* ── Game-specific tokens ──────────────────────────────────────── */
+:root {
+  --color-meadow:        #2A1F14;   /* dark dusk play area             */
+  --color-meadow-mid:    #1A1209;   /* deeper dusk for vignette        */
+  --color-firefly:       #F2C078;   /* amber-golden firefly body       */
+  --color-firefly-lit:   #FFE8A0;   /* bright lit state                */
+  --color-firefly-glow:  rgba(242, 192, 120, 0.7);  /* glow shadow     */
+  --color-spark:         #FFD966;   /* sparkle particle color          */
+  --color-star:          rgba(255, 248, 230, 0.6);  /* faint bg stars  */
+  --color-pip-full:      #F2A030;   /* lantern pip lit                 */
+  --color-pip-empty:     #4A3828;   /* lantern pip lost                */
+  --color-overlay:       rgba(26, 18, 9, 0.88);     /* game-over dark  */
+  --color-wave-badge:    rgba(255, 253, 248, 0.12); /* wave info bg    */
+}
+
+/* ── Layout shell ──────────────────────────────────────────────── */
+.game-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--color-bg);
+}
+
+/* ── Top chrome bar ────────────────────────────────────────────── */
+.game-header {
+  background: var(--color-surface);
+  border-bottom: 1.5px solid var(--color-border);
+  padding: 0.55rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  user-select: none;
+  position: relative;
+  z-index: 10;
+}
+
+.back-link {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.hud {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.hud__item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.hud__label {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.hud__value {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--color-primary);
+  min-width: 1.6ch;
+  text-align: right;
+}
+
+/* ── Lantern pips ──────────────────────────────────────────────── */
+.pips {
+  display: flex;
+  align-items: center;
+  gap: 0.22rem;
+}
+
+.pip {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-pip-full);
+  box-shadow: 0 0 6px var(--color-pip-full);
+  transition: background 0.35s, box-shadow 0.35s, transform 0.2s;
+  position: relative;
+}
+
+.pip::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--color-firefly-lit);
+  opacity: 0.7;
+}
+
+.pip--empty {
+  background: var(--color-pip-empty);
+  box-shadow: none;
+}
+
+.pip--empty::before {
+  opacity: 0;
+}
+
+.pip--shake {
+  animation: pipShake 0.35s ease;
+}
+
+@keyframes pipShake {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-3px) rotate(-10deg); }
+  75%       { transform: translateX(3px) rotate(10deg); }
+}
+
+/* ── Timer bar ─────────────────────────────────────────────────── */
+.timer-bar-wrap {
+  height: 4px;
+  background: var(--color-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.timer-bar {
+  height: 100%;
+  background: var(--color-primary);
+  width: 100%;
+  transform-origin: left;
+  transition: width 0.25s linear;
+}
+
+/* ── Play field ────────────────────────────────────────────────── */
+.meadow {
+  flex: 1;
+  position: relative;
+  background: var(--color-meadow);
+  overflow: hidden;
+  cursor: default;
+  touch-action: manipulation;
+  /* Radial vignette for depth */
+  background-image:
+    radial-gradient(ellipse 90% 80% at 50% 120%, var(--color-meadow-mid) 0%, transparent 70%);
+}
+
+/* ── Background star dots ──────────────────────────────────────── */
+.star-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--color-star);
+  animation: starTwinkle var(--star-duration, 3s) ease-in-out infinite;
+  animation-delay: var(--star-delay, 0s);
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+
+/* ── Firefly ───────────────────────────────────────────────────── */
+.firefly {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  /* Enlarge tap target beyond visible dot */
+}
+
+.firefly__dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-firefly);
+  opacity: 0;
+  transition: none;
+  pointer-events: none;
+}
+
+/* Phase: rising (pulse in) */
+.firefly--rising .firefly__dot {
+  animation: fireflyRise var(--ff-rise, 0.4s) ease-out forwards;
+}
+
+@keyframes fireflyRise {
+  0%   { opacity: 0;   box-shadow: 0 0 0px 0px var(--color-firefly-glow); transform: scale(0.4); }
+  100% { opacity: 1;   box-shadow: 0 0 10px 6px var(--color-firefly-glow); transform: scale(1); }
+}
+
+/* Phase: lit (fully bright, gentle pulse) */
+.firefly--lit .firefly__dot {
+  opacity: 1;
+  box-shadow: 0 0 10px 6px var(--color-firefly-glow);
+  animation: fireflyPulse 1.1s ease-in-out infinite;
+}
+
+@keyframes fireflyPulse {
+  0%, 100% { box-shadow: 0 0 10px 6px var(--color-firefly-glow); transform: scale(1); }
+  50%       { box-shadow: 0 0 16px 10px var(--color-firefly-glow); transform: scale(1.12); }
+}
+
+/* Phase: fading */
+.firefly--fading .firefly__dot {
+  animation: fireflyFade var(--ff-fade, 0.4s) ease-in forwards;
+}
+
+@keyframes fireflyFade {
+  0%   { opacity: 1; box-shadow: 0 0 10px 6px var(--color-firefly-glow); transform: scale(1); }
+  100% { opacity: 0; box-shadow: 0 0 0px 0px var(--color-firefly-glow); transform: scale(0.4); }
+}
+
+/* ── Sparkle burst ─────────────────────────────────────────────── */
+.spark-container {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+}
+
+.spark {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-spark);
+  animation: sparkFly var(--spark-dur, 0.55s) ease-out forwards;
+}
+
+@keyframes sparkFly {
+  0%   {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--spark-tx, 30px), var(--spark-ty, -30px)) scale(0.3);
+  }
+}
+
+/* ── Score pop ─────────────────────────────────────────────────── */
+.score-pop {
+  position: absolute;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--color-firefly-lit);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  animation: scorePop 0.75s ease-out forwards;
+  text-shadow: 0 1px 6px var(--color-meadow);
+  white-space: nowrap;
+}
+
+@keyframes scorePop {
+  0%   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  60%  { opacity: 1; transform: translate(-50%, -120%) scale(1.15); }
+  100% { opacity: 0; transform: translate(-50%, -180%) scale(0.9); }
+}
+
+/* ── Screens (start / inter-wave / game-over) ──────────────────── */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5rem;
+  background: var(--color-overlay);
+  z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.screen--visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.screen__emoji {
+  font-size: 3.5rem;
+  margin-bottom: 0.6rem;
+  line-height: 1;
+}
+
+.screen__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  color: var(--color-firefly-lit);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.screen__sub {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-accent);
+  margin-bottom: 1.5rem;
+  max-width: 300px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.screen__stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.screen__stat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.screen__stat-label {
+  color: var(--color-muted);
+}
+
+.screen__stat-value {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--color-firefly-lit);
+}
+
+.stars-display {
+  font-size: 2rem;
+  letter-spacing: 0.15em;
+  margin-bottom: 1.25rem;
+  filter: drop-shadow(0 0 8px var(--color-firefly-glow));
+}
+
+.star--empty {
+  opacity: 0.25;
+  filter: none;
+}
+
+/* ── Wave intro badge ──────────────────────────────────────────── */
+.wave-badge {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--color-firefly-lit);
+  background: var(--color-wave-badge);
+  border: 1.5px solid var(--color-accent);
+  border-radius: var(--radius-card);
+  padding: 0.5rem 1.4rem;
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.04em;
+}
+
+/* ── Buttons ───────────────────────────────────────────────────── */
+.btn-play {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 800;
+  background: var(--color-primary);
+  color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius-btn);
+  padding: 0.8rem 2.2rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-btn);
+  transition: background 0.15s, transform 0.15s;
+  letter-spacing: 0.03em;
+}
+
+.btn-play:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+.btn-play:active {
+  transform: translateY(0);
+}
+
+/* ── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 375px) {
+  .hud__value {
+    font-size: 0.95rem;
+  }
+  .pip {
+    width: 15px;
+    height: 15px;
+  }
+}

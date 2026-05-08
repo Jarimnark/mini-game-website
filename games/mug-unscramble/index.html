@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mug Unscramble — mini-gamo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══ Nav bar ═══════════════════════════════════════════════ -->
+  <nav class="game-nav">
+    <a class="back-link" href="../../src/index.html">← mini-gamo</a>
+    <span style="font-family: var(--font-display); font-size: 1rem; color: var(--color-primary);">☕ Mug Unscramble</span>
+  </nav>
+
+  <!-- ═══ Score bar ═════════════════════════════════════════════ -->
+  <div class="score-bar">
+    <div class="score-bar__item">
+      <span class="score-bar__label">Round</span>
+      <span class="score-bar__value" id="round-val">1/10</span>
+    </div>
+
+    <div class="hint-area">
+      <button class="hint-btn" id="hint-btn">
+        💡 Hint (<span id="hints-left">2</span>)
+      </button>
+    </div>
+
+    <div class="score-bar__item">
+      <span class="score-bar__label">Score</span>
+      <span class="score-bar__value score-bar__value--score" id="score-val">0</span>
+    </div>
+  </div>
+
+  <!-- ═══ Game screen ════════════════════════════════════════════ -->
+  <main id="game-main" class="game-main">
+
+    <!-- Attempt dots -->
+    <div id="attempt-dots" class="attempt-dots" aria-label="Attempts remaining"></div>
+
+    <!-- Mug with letter tiles -->
+    <div class="mug-wrapper">
+      <div class="mug-svg-container" id="mug-container" aria-label="Mug with scrambled letters">
+
+        <!-- Steam puffs (always animated subtly) -->
+        <div class="steam-group" aria-hidden="true">
+          <div class="steam-line steam-line--1"></div>
+          <div class="steam-line steam-line--2"></div>
+          <div class="steam-line steam-line--3"></div>
+        </div>
+
+        <!-- Amber glow ring on correct -->
+        <div class="mug-glow" aria-hidden="true"></div>
+
+        <!-- SVG Mug shape -->
+        <svg
+          viewBox="0 0 220 220"
+          xmlns="http://www.w3.org/2000/svg"
+          width="100%"
+          height="100%"
+          aria-hidden="true"
+        >
+          <!-- Wooden coaster / saucer -->
+          <ellipse cx="110" cy="200" rx="72" ry="11"
+            fill="var(--color-secondary)" opacity="0.45" />
+          <ellipse cx="110" cy="198" rx="65" ry="8"
+            fill="var(--color-accent)" opacity="0.35" />
+
+          <!-- Mug body -->
+          <rect x="30" y="62" width="148" height="126" rx="18" ry="18"
+            fill="var(--color-surface)" stroke="var(--color-border)" stroke-width="2.5" />
+
+          <!-- Mug interior top (shadow) -->
+          <ellipse cx="104" cy="65" rx="60" ry="12"
+            fill="var(--color-accent-pale)" />
+          <ellipse cx="104" cy="62" rx="55" ry="9"
+            fill="var(--color-accent)" opacity="0.35" />
+
+          <!-- Rim highlight -->
+          <rect x="30" y="62" width="148" height="22" rx="18" ry="18"
+            fill="var(--color-accent)" opacity="0.22" />
+
+          <!-- Handle -->
+          <path d="M178 90 C208 90 220 110 220 125 C220 142 208 158 178 158"
+            fill="none" stroke="var(--color-border)" stroke-width="14"
+            stroke-linecap="round" />
+          <path d="M178 90 C208 90 220 110 220 125 C220 142 208 158 178 158"
+            fill="none" stroke="var(--color-surface)" stroke-width="7"
+            stroke-linecap="round" />
+
+          <!-- Subtle warm tint on body -->
+          <rect x="32" y="78" width="144" height="108" rx="16" ry="16"
+            fill="var(--color-accent-pale)" opacity="0.35" />
+
+          <!-- Bottom band -->
+          <rect x="30" y="170" width="148" height="18" rx="0" ry="0"
+            fill="var(--color-accent)" opacity="0.18" />
+          <rect x="30" y="182" width="148" height="6" rx="0" ry="0"
+            fill="var(--color-secondary)" opacity="0.18" />
+        </svg>
+
+        <!-- Letter tiles overlaid on mug body -->
+        <div id="mug-letters" class="mug-letters" role="group" aria-label="Scrambled letters"></div>
+
+      </div>
+    </div>
+
+    <!-- Feedback label -->
+    <div id="feedback-label" class="feedback-label" aria-live="polite"></div>
+
+    <!-- Answer tray -->
+    <div id="answer-tray" class="answer-tray" role="group" aria-label="Answer tray"></div>
+
+  </main>
+
+  <!-- ═══ Game Over overlay ══════════════════════════════════════ -->
+  <div id="game-over" class="game-over" aria-live="polite">
+    <div class="game-over__mug-emoji">☕</div>
+    <h1 class="game-over__title">All mugs done!</h1>
+    <div class="game-over__stars" id="go-stars">☆☆☆</div>
+    <div class="game-over__score-box">
+      <p>Final Score</p>
+      <div class="game-over__score-big" id="go-score">0</div>
+      <div class="game-over__hi" id="go-hi">Best: 0 pts</div>
+    </div>
+    <button class="btn btn--primary play-again-btn" id="play-again-btn">
+      Play Again ↩
+    </button>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

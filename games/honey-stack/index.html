@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Honey Stack — mini-gamo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../src/styles/main.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Back link -->
+  <a class="back-link" href="../../src/index.html">← mini-gamo</a>
+
+  <!-- Timer bar -->
+  <div class="timer-bar-wrap" aria-label="Time remaining">
+    <div class="timer-bar" id="timer-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="60"></div>
+  </div>
+
+  <!-- Main game wrapper -->
+  <main class="game-wrapper">
+
+    <!-- Header row: score + multiplier badge -->
+    <header class="game-header">
+      <div class="score-display">
+        <span class="score-label">Score</span>
+        <span class="score-value" id="score-display">0</span>
+      </div>
+
+      <div class="timer-display">
+        <span class="score-label">Time</span>
+        <span class="score-value" id="timer-display">60</span>
+      </div>
+
+      <div class="multiplier-badge" id="multiplier-badge" data-tier="1">
+        <span class="multiplier-x">×</span><span id="multiplier-value">1</span>
+      </div>
+    </header>
+
+    <!-- Bee + expression area -->
+    <section class="bee-stage" id="bee-stage" aria-live="polite" aria-label="Current arithmetic expression">
+      <div class="bee" id="bee" aria-hidden="true">
+        <!-- SVG bee body -->
+        <svg class="bee-svg" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <!-- Body -->
+          <ellipse cx="30" cy="34" rx="16" ry="12" fill="var(--bee-amber)"/>
+          <!-- Stripes -->
+          <ellipse cx="30" cy="30" rx="14" ry="3.5" fill="var(--bee-dark)"/>
+          <ellipse cx="30" cy="37" rx="14" ry="3.5" fill="var(--bee-dark)"/>
+          <!-- Head -->
+          <circle cx="30" cy="20" r="9" fill="var(--bee-amber)"/>
+          <!-- Eyes -->
+          <circle cx="26" cy="18" r="2" fill="var(--bee-dark)"/>
+          <circle cx="34" cy="18" r="2" fill="var(--bee-dark)"/>
+          <!-- Antennae -->
+          <line x1="26" y1="12" x2="22" y2="6" stroke="var(--bee-dark)" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="22" cy="5" r="2" fill="var(--bee-dark)"/>
+          <line x1="34" y1="12" x2="38" y2="6" stroke="var(--bee-dark)" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="38" cy="5" r="2" fill="var(--bee-dark)"/>
+          <!-- Wings -->
+          <ellipse cx="14" cy="24" rx="10" ry="6" fill="var(--bee-wing)" opacity="0.75" transform="rotate(-20 14 24)"/>
+          <ellipse cx="46" cy="24" rx="10" ry="6" fill="var(--bee-wing)" opacity="0.75" transform="rotate(20 46 24)"/>
+          <!-- Stinger -->
+          <polygon points="30,45 27,50 33,50" fill="var(--bee-dark)"/>
+        </svg>
+        <!-- Sign showing expression -->
+        <div class="bee-sign" id="bee-sign">
+          <span id="expression-text">4 + 3</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Flowers row -->
+    <section class="flowers-row" id="flowers-row" aria-label="Answer flowers — press 1, 2, or 3">
+      <button class="flower" id="flower-0" data-idx="0" aria-label="Flower 1">
+        <div class="flower__petals" aria-hidden="true"></div>
+        <div class="flower__center">
+          <span class="flower__number" id="flower-num-0">2</span>
+        </div>
+        <span class="flower__key-hint" aria-hidden="true">1</span>
+      </button>
+      <button class="flower" id="flower-1" data-idx="1" aria-label="Flower 2">
+        <div class="flower__petals" aria-hidden="true"></div>
+        <div class="flower__center">
+          <span class="flower__number" id="flower-num-1">7</span>
+        </div>
+        <span class="flower__key-hint" aria-hidden="true">2</span>
+      </button>
+      <button class="flower" id="flower-2" data-idx="2" aria-label="Flower 3">
+        <div class="flower__petals" aria-hidden="true"></div>
+        <div class="flower__center">
+          <span class="flower__number" id="flower-num-2">9</span>
+        </div>
+        <span class="flower__key-hint" aria-hidden="true">3</span>
+      </button>
+    </section>
+
+    <!-- Streak info below flowers -->
+    <div class="streak-bar">
+      <span class="streak-label">Streak</span>
+      <span class="streak-value" id="streak-display">0</span>
+    </div>
+
+  </main>
+
+  <!-- Game-over overlay -->
+  <div class="overlay" id="game-over-overlay" hidden>
+    <div class="overlay-card">
+      <div class="overlay-emoji" id="overlay-emoji">🐝</div>
+      <h2 class="overlay-title">Time's Up!</h2>
+      <div class="overlay-stars" id="overlay-stars">☆☆☆</div>
+      <div class="overlay-score-block">
+        <div class="overlay-score-row">
+          <span>Final Score</span>
+          <strong id="overlay-score">0</strong>
+        </div>
+        <div class="overlay-score-row">
+          <span>Longest Streak</span>
+          <strong id="overlay-streak">0</strong>
+        </div>
+        <div class="overlay-score-row overlay-score-row--hi">
+          <span>Best Score</span>
+          <strong id="overlay-hi">0</strong>
+        </div>
+      </div>
+      <button class="btn-play-again" id="btn-play-again">Play Again</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

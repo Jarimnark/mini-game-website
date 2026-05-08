@@ -1,0 +1,480 @@
+/* ─── Mug Unscramble — Game Styles ───────────────────────────── */
+@import url('../../src/styles/main.css');
+
+:root {
+  --shadow-letter-tile: 0 2px 6px rgba(180, 120, 60, 0.25);
+}
+
+/* ─── Page Layout ─────────────────────────────────────────────── */
+body {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ─── Top Nav Bar ─────────────────────────────────────────────── */
+.game-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background: var(--color-surface);
+  border-bottom: 1.5px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+/* ─── Score Header Bar ────────────────────────────────────────── */
+.score-bar {
+  background: var(--color-accent-pale);
+  border-bottom: 1.5px solid var(--color-accent);
+  padding: 0.55rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+}
+
+.score-bar__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  line-height: 1;
+}
+
+.score-bar__label {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.score-bar__value {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--color-text);
+}
+
+.score-bar__value--score {
+  color: var(--color-primary);
+}
+
+/* ─── Hint button area ────────────────────────────────────────── */
+.hint-area {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.hint-btn {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-accent);
+  border-radius: var(--radius-btn);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--color-secondary);
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+  white-space: nowrap;
+}
+
+.hint-btn:hover:not(:disabled) {
+  background: var(--color-accent-pale);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.hint-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+/* ─── Main Game Container ─────────────────────────────────────── */
+.game-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0.75rem 1.5rem;
+  gap: 1.1rem;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ─── Attempt dots ────────────────────────────────────────────── */
+.attempt-dots {
+  display: flex;
+  gap: 0.45rem;
+  justify-content: center;
+}
+
+.attempt-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--color-border);
+  border: 1.5px solid var(--color-accent);
+  transition: background 0.25s;
+}
+
+.attempt-dot--used {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+/* ─── Mug Wrapper (slide in/out transitions) ─────────────────── */
+.mug-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ─── SVG Mug ─────────────────────────────────────────────────── */
+.mug-svg-container {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  flex-shrink: 0;
+  transition: transform 0.5s cubic-bezier(.4,0,.2,1);
+}
+
+.mug-svg-container.slide-out-left {
+  transform: translateX(-140%);
+}
+
+.mug-svg-container.slide-in-right {
+  transform: translateX(140%);
+}
+
+.mug-svg-container.slide-to-center {
+  transform: translateX(0);
+  transition: transform 0.45s cubic-bezier(.4,0,.2,1);
+}
+
+/* Glow ring on correct answer */
+.mug-glow {
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(ellipse 70% 70% at 50% 60%, var(--color-accent), transparent 70%);
+  transition: opacity 0.3s;
+}
+
+.mug-svg-container.mug--correct .mug-glow {
+  animation: mugGlow 1.2s ease-out forwards;
+}
+
+@keyframes mugGlow {
+  0%   { opacity: 0; transform: scale(0.8); }
+  30%  { opacity: 0.85; transform: scale(1.1); }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+
+/* ─── Steam Animations ────────────────────────────────────────── */
+.steam-group {
+  position: absolute;
+  top: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.steam-line {
+  width: 6px;
+  height: 28px;
+  border-radius: 4px;
+  background: var(--color-border);
+  opacity: 0;
+  transform-origin: bottom center;
+}
+
+.steam-line--1 { animation: steamRise 2.4s ease-in-out infinite 0s; }
+.steam-line--2 { animation: steamRise 2.4s ease-in-out infinite 0.6s; }
+.steam-line--3 { animation: steamRise 2.4s ease-in-out infinite 1.2s; }
+
+@keyframes steamRise {
+  0%   { opacity: 0;    transform: translateY(0)   scaleX(1) }
+  20%  { opacity: 0.55; transform: translateY(-6px) scaleX(1.1) }
+  80%  { opacity: 0.2;  transform: translateY(-22px) scaleX(0.8) }
+  100% { opacity: 0;    transform: translateY(-32px) scaleX(0.7) }
+}
+
+/* Big steam burst on correct answer */
+.mug-svg-container.mug--correct .steam-line {
+  animation: steamBurst 1.6s ease-out forwards;
+}
+
+@keyframes steamBurst {
+  0%   { opacity: 0;    transform: translateY(0)   scaleX(1) }
+  15%  { opacity: 0.9;  transform: translateY(-8px) scaleX(1.3) }
+  100% { opacity: 0;    transform: translateY(-50px) scaleX(0.5) }
+}
+
+/* ─── Letter tiles inside the mug body ───────────────────────── */
+.mug-letters {
+  position: absolute;
+  /* positioned over the mug body area */
+  top: 68px;
+  left: 28px;
+  right: 28px;
+  bottom: 52px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px;
+}
+
+.letter-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: var(--color-primary);
+  color: var(--color-surface);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  border: none;
+  box-shadow: var(--shadow-letter-tile);
+  transition: transform 0.12s, background 0.12s, opacity 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
+}
+
+.letter-tile:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+  transform: scale(1.12) translateY(-2px);
+}
+
+.letter-tile:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.letter-tile:disabled,
+.letter-tile--used {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.letter-tile--hint {
+  background: var(--color-accent);
+  color: var(--color-text);
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ─── Answer Tray ─────────────────────────────────────────────── */
+.answer-tray {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  min-height: 48px;
+}
+
+.tray-slot {
+  width: 38px;
+  height: 44px;
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-btn);
+  background: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.tray-slot--filled {
+  background: var(--color-accent-pale);
+  border-color: var(--color-primary);
+}
+
+.tray-slot--hint-placed {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.tray-slot .letter-tile {
+  width: 30px;
+  height: 30px;
+  font-size: 0.95rem;
+  box-shadow: none;
+}
+
+.tray-slot .letter-tile:hover:not(:disabled) {
+  background: var(--color-secondary);
+}
+
+/* ─── Shake animation (wrong answer) ─────────────────────────── */
+.answer-tray.shake {
+  animation: shakeX 0.45s ease both;
+}
+
+@keyframes shakeX {
+  0%, 100% { transform: translateX(0); }
+  15%       { transform: translateX(-10px); }
+  30%       { transform: translateX(10px); }
+  45%       { transform: translateX(-8px); }
+  60%       { transform: translateX(8px); }
+  75%       { transform: translateX(-4px); }
+  90%       { transform: translateX(4px); }
+}
+
+/* ─── Feedback label ──────────────────────────────────────────── */
+.feedback-label {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  text-align: center;
+  min-height: 1.4em;
+  color: var(--color-muted);
+  transition: color 0.2s;
+}
+
+.feedback-label--correct {
+  color: var(--color-primary);
+}
+
+.feedback-label--wrong {
+  color: var(--color-secondary);
+}
+
+.feedback-label--reveal {
+  color: var(--color-text);
+}
+
+/* ─── Game Over Screen ────────────────────────────────────────── */
+.game-over {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1.1rem;
+  padding: 2rem 1.25rem;
+  max-width: 420px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+  animation: fadeUp 0.5s ease both;
+}
+
+.game-over.visible {
+  display: flex;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.game-over__mug-emoji {
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.game-over__title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--color-text);
+}
+
+.game-over__stars {
+  font-size: 2.2rem;
+  letter-spacing: 0.15em;
+  line-height: 1;
+}
+
+.game-over__score-box {
+  background: var(--color-accent-pale);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-card);
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  width: 100%;
+  max-width: 280px;
+}
+
+.game-over__score-box p {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.game-over__score-big {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.game-over__hi {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-muted);
+}
+
+.play-again-btn {
+  margin-top: 0.4rem;
+  width: 100%;
+  max-width: 260px;
+  padding: 0.85rem 1.5rem;
+  font-size: 1.05rem;
+}
+
+/* ─── Responsive tweaks ───────────────────────────────────────── */
+@media (min-width: 480px) {
+  .mug-svg-container {
+    width: 260px;
+    height: 260px;
+  }
+
+  .mug-letters {
+    top: 80px;
+    left: 32px;
+    right: 32px;
+    bottom: 62px;
+    gap: 7px;
+  }
+
+  .letter-tile {
+    width: 38px;
+    height: 38px;
+    font-size: 1.2rem;
+  }
+
+  .tray-slot {
+    width: 44px;
+    height: 50px;
+  }
+}
+
+@media (min-width: 640px) {
+  .game-main {
+    padding: 1.5rem 1.5rem 2rem;
+    gap: 1.4rem;
+  }
+}
