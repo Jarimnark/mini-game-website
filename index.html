@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mini-gamo — tiny games, big smiles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────────── */
+    :root {
+      --color-bg:        #FFF8F0;
+      --color-surface:   #FFFDF8;
+      --color-primary:   #E8813A;
+      --color-primary-hover: #D4712A;
+      --color-secondary: #C9956B;
+      --color-text:      #3D2C1E;
+      --color-muted:     #8C6E5A;
+      --color-accent:    #F2C078;
+      --color-border:    #E8D5C4;
+      --color-accent-pale: #FEF0D6;
+
+      --radius-card:     12px;
+      --radius-btn:      8px;
+      --radius-tag:      20px;
+      --shadow-card:     0 2px 12px rgba(180,120,60,0.10);
+      --shadow-card-hover: 0 8px 28px rgba(180,120,60,0.18);
+      --shadow-btn:      0 4px 14px rgba(232,129,58,0.35);
+
+      --font-display:    'Fredoka One', cursive;
+      --font-body:       'Nunito', sans-serif;
+
+      --max-w:           1100px;
+      --px:              1.25rem;
+    }
+
+    /* ─── Reset ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img, svg { display: block; }
+
+    /* ─── Utility ────────────────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--px);
+    }
+
+    /* ─── Header ─────────────────────────────────────────────── */
+    .site-header {
+      padding: 1.25rem var(--px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 248, 240, 0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .logo {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      line-height: 1;
+    }
+    .logo__name {
+      font-family: var(--font-display);
+      font-size: 1.55rem;
+      color: var(--color-primary);
+      letter-spacing: 0.02em;
+    }
+    .logo__tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--color-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 1px;
+    }
+    .header-badge {
+      background: var(--color-accent-pale);
+      border: 1.5px solid var(--color-accent);
+      border-radius: 20px;
+      padding: 0.3rem 0.85rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--color-secondary);
+      letter-spacing: 0.04em;
+    }
+
+    /* ─── Hero ───────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      padding: 5rem var(--px) 6rem;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 30%, rgba(242,192,120,0.22) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 15% 80%, rgba(232,129,58,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 35% 45% at 88% 20%, rgba(201,149,107,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(180,120,60,0.12) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+      opacity: 0.55;
+    }
+
+    .hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.55;
+    }
+    .hero-blob--1 {
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(242,192,120,0.45), transparent 70%);
+      top: -40px; left: -60px;
+      animation: floatA 8s ease-in-out infinite;
+    }
+    .hero-blob--2 {
+      width: 140px; height: 140px;
+      background: radial-gradient(circle, rgba(232,129,58,0.30), transparent 70%);
+      bottom: 60px; right: 40px;
+      animation: floatB 10s ease-in-out infinite;
+    }
+    .hero-blob--3 {
+      width: 90px; height: 90px;
+      background: radial-gradient(circle, rgba(201,149,107,0.40), transparent 70%);
+      top: 40px; right: 18%;
+      animation: floatA 12s ease-in-out infinite reverse;
+    }
+
+    @keyframes floatA {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%       { transform: translateY(-18px) scale(1.06); }
+    }
+    @keyframes floatB {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%       { transform: translateY(-12px) rotate(8deg); }
+    }
+
+    .hero__inner {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+      margin: 0 auto;
+      animation: fadeUp 0.7s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--color-accent-pale);
+      border: 1.5px solid var(--color-accent);
+      border-radius: 20px;
+      padding: 0.3rem 1rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--color-secondary);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 1.4rem;
+    }
+
+    .hero__headline {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      color: var(--color-text);
+      line-height: 1.12;
+      margin-bottom: 1.1rem;
+      letter-spacing: 0.01em;
+    }
+    .hero__headline em {
+      font-style: normal;
+      color: var(--color-primary);
+      position: relative;
+      display: inline-block;
+    }
+    .hero__headline em::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0; right: 0;
+      height: 6px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10'%3E%3Cpath d='M0 5 Q15 0 30 5 Q45 10 60 5 Q75 0 90 5 Q105 10 120 5' stroke='%23F2C078' stroke-width='2.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x center;
+      background-size: 60px 6px;
+      opacity: 0.9;
+    }
+
+    .hero__sub {
+      font-size: 1.08rem;
+      color: var(--color-muted);
+      font-weight: 500;
+      max-width: 420px;
+      margin: 0 auto 2.2rem;
+      line-height: 1.65;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--color-primary);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 800;
+      padding: 0.85rem 2rem;
+      border-radius: var(--radius-btn);
+      box-shadow: var(--shadow-btn);
+      transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
+      letter-spacing: 0.02em;
+    }
+    .btn-primary:hover {
+      background: var(--color-primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(232,129,58,0.42);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    /* ─── Wave Divider ────────────────────────────────────────── */
+    .wave-divider {
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+      margin-bottom: -2px;
+    }
+    .wave-divider svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ─── Games Section ───────────────────────────────────────── */
+    .games-section {
+      background: var(--color-surface);
+      padding: 4rem var(--px) 5rem;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .section-header__eyebrow {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--color-secondary);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .section-header__title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      color: var(--color-text);
+      letter-spacing: 0.01em;
+    }
+    .section-header__title span {
+      color: var(--color-primary);
+    }
+
+    /* ─── Games Grid ─────────────────────────────────────────── */
+    #games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* ─── Game Card ──────────────────────────────────────────── */
+    .game-card {
+      background: var(--color-bg);
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-card);
+      padding: 1.6rem 1.4rem 1.4rem;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      cursor: pointer;
+      animation: cardIn 0.5s ease both;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .game-card:hover {
+      transform: translateY(-4px) scale(1.012);
+      box-shadow: var(--shadow-card-hover);
+      border-color: var(--color-accent);
+    }
+
+    .game-card__emoji {
+      font-size: 2.4rem;
+      line-height: 1;
+      margin-bottom: 0.2rem;
+    }
+    .game-card__title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: var(--color-text);
+      letter-spacing: 0.01em;
+    }
+    .game-card__desc {
+      font-size: 0.88rem;
+      color: var(--color-muted);
+      font-weight: 500;
+      line-height: 1.55;
+      flex: 1;
+    }
+    .game-card__tag {
+      align-self: flex-start;
+      background: var(--color-accent-pale);
+      color: var(--color-secondary);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.22rem 0.7rem;
+      border-radius: var(--radius-tag);
+      border: 1px solid var(--color-accent);
+      margin-top: 0.2rem;
+    }
+
+    /* ─── Coming Soon Card ────────────────────────────────────── */
+    .game-card--soon {
+      border-style: dashed;
+      border-color: var(--color-border);
+      background: transparent;
+      box-shadow: none;
+      align-items: center;
+      text-align: center;
+      justify-content: center;
+      padding: 2.5rem 1.4rem;
+      cursor: default;
+      min-height: 200px;
+    }
+    .game-card--soon:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: var(--color-accent);
+    }
+    .game-card--soon .game-card__emoji { font-size: 2.8rem; opacity: 0.7; }
+    .game-card--soon .game-card__title { font-family: var(--font-body); font-size: 0.95rem; font-weight: 700; color: var(--color-muted); }
+    .game-card--soon .game-card__desc  { font-size: 0.82rem; color: var(--color-border); }
+
+    /* ─── Footer ──────────────────────────────────────────────── */
+    .site-footer {
+      text-align: center;
+      padding: 2.2rem var(--px);
+      background: var(--color-bg);
+      border-top: 1px solid var(--color-border);
+      font-size: 0.85rem;
+      color: var(--color-muted);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    /* ─── Responsive ──────────────────────────────────────────── */
+    @media (min-width: 640px) {
+      .hero { padding: 6rem var(--px) 7rem; }
+      :root { --px: 2rem; }
+    }
+    @media (min-width: 1024px) {
+      :root { --px: 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ Header ═══════════════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo__name">mini-gamo 🎮</span>
+      <span class="logo__tag">tiny games, big smiles</span>
+    </div>
+    <span class="header-badge">Free &amp; No signup</span>
+  </header>
+
+  <!-- ═══ Hero ══════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-blob hero-blob--1"></div>
+    <div class="hero-blob hero-blob--2"></div>
+    <div class="hero-blob hero-blob--3"></div>
+
+    <div class="hero__inner">
+      <div class="hero__eyebrow">✨ Your cozy game den</div>
+      <h1 class="hero__headline">
+        Your cozy corner<br>of <em>fun</em>
+      </h1>
+      <p class="hero__sub">
+        Tiny browser games handcrafted to brighten your day — no downloads, no accounts, just play.
+      </p>
+      <a href="#games-grid" class="btn-primary">
+        Browse Games &nbsp;↓
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══ Wave Divider ══════════════════════════════════════════ -->
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1440 64" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0,32 C240,64 480,0 720,32 C960,64 1200,0 1440,32 L1440,64 L0,64 Z" fill="#FFFDF8"/>
+    </svg>
+  </div>
+
+  <!-- ═══ Games Section ══════════════════════════════════════════ -->
+  <section class="games-section">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-header__eyebrow">🕹️ The Library</p>
+        <h2 class="section-header__title">All <span>Games</span></h2>
+      </div>
+
+      <div id="games-grid">
+
+        <a class="game-card" href="games/seed-planner/index.html">
+          <div class="game-card__emoji">🌱</div>
+          <h3 class="game-card__title">Seed Planner</h3>
+          <p class="game-card__desc">Arrange crops on a cozy garden grid to trigger harvest combos and fill your basket.</p>
+          <span class="game-card__tag">Puzzle</span>
+        </a>
+
+        <a class="game-card" href="games/firefly-catch/index.html">
+          <div class="game-card__emoji">✨</div>
+          <h3 class="game-card__title">Firefly Catch</h3>
+          <p class="game-card__desc">Tap glowing fireflies before they fade to keep your lantern burning bright.</p>
+          <span class="game-card__tag">Reflex</span>
+        </a>
+
+        <a class="game-card" href="games/mug-unscramble/index.html">
+          <div class="game-card__emoji">☕</div>
+          <h3 class="game-card__title">Mug Unscramble</h3>
+          <p class="game-card__desc">Click scrambled letters on a cozy mug to spell out the hidden word.</p>
+          <span class="game-card__tag">Word</span>
+        </a>
+
+        <a class="game-card" href="games/garden-sequence/index.html">
+          <div class="game-card__emoji">🪴</div>
+          <h3 class="game-card__title">Garden Sequence</h3>
+          <p class="game-card__desc">Watch the gnome's garden actions, then repeat the growing sequence perfectly.</p>
+          <span class="game-card__tag">Memory</span>
+        </a>
+
+        <a class="game-card" href="games/honey-stack/index.html">
+          <div class="game-card__emoji">🐝</div>
+          <h3 class="game-card__title">Honey Stack</h3>
+          <p class="game-card__desc">Guide a number-carrying bee to the right flower and build your arithmetic streak.</p>
+          <span class="game-card__tag">Math</span>
+        </a>
+
+        <div class="game-card game-card--soon">
+          <div class="game-card__emoji">☕</div>
+          <h3 class="game-card__title">More games coming soon...</h3>
+          <p class="game-card__desc">Grab a warm drink — new games are brewing!</p>
+        </div>
+
+        <!-- ─── GAME CARDS GO HERE ──────────────────────────────
+             Copy this block for each new game:
+
+          <a class="game-card" href="games/SLUG/index.html">
+            <div class="game-card__emoji">🎯</div>
+            <h3 class="game-card__title">Game Name</h3>
+            <p class="game-card__desc">One-line description of the game.</p>
+            <span class="game-card__tag">Genre</span>
+          </a>
+        ──────────────────────────────────────────────────────── -->
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Footer ════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    mini-gamo &bull; made with ☕ and love
+  </footer>
+
+</body>
+</html>
